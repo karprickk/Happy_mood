@@ -1,0 +1,135 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cheer Up, Love 💖</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    function showCustomInput() {
+      const selection = document.getElementById("mood_item").value;
+      const customDiv = document.getElementById("customInputDiv");
+      if (selection === "Other") {
+        customDiv.style.display = "block";
+      } else {
+        customDiv.style.display = "none";
+      }
+    }
+  </script>
+</head>
+<canvas id="heartCanvas"></canvas>
+<script>
+    const canvas = document.getElementById("heartCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    let hearts = [];
+    
+    function createHeart() {
+        const x = Math.random() * canvas.width;
+        const size = Math.random() * 10 + 10;
+        const speed = Math.random() * 0.5 + 0.3;  // slower
+        hearts.push({ x, y: canvas.height, size, speed });
+        if (hearts.length > 10) hearts.shift(); // limit max number
+    }
+    
+    function drawHearts() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts.forEach((heart, i) => {
+            ctx.font = `${heart.size}px Arial`;
+            ctx.fillStyle = "#ff69b4";
+            ctx.fillText("❤️", heart.x, heart.y);
+            heart.y -= heart.speed;
+            if (heart.y < 0) hearts.splice(i, 1);
+        });
+    }
+    
+    setInterval(() => {
+        createHeart();
+        drawHearts();
+    }, 500); // slower heart creation
+    </script>
+    
+
+<style>
+#heartCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+</style>
+
+<body>
+  <div class="container">
+    <h2>OHHHHH NOOOO!!!</h2>
+    <h1> Is my princess dull??? 😘 </h1>
+    <form action="/submit" method="POST">
+      <label for="mood_item">Your 24/7 helpline is here, my queen.💌</label><br>
+      <label for="mood_item">Please select an option cutie (or I'll eat you 🥰)</label><br>
+      <select name="mood_item" id="mood_item" onchange="showCustomInput()" required>
+        <option disabled selected value>-- choose an option --</option>
+        <option value="Magnum Brownie 🍦">Magnum Brownie 🍦</option>
+        <option value="Kinder Joy 🍬">Kinder Joy 🍬</option>
+        <option value="Corn Tomato Pizza 🍕">Corn Tomato Pizza 🍕</option>
+        <option value="Random Chocolates 🍫">Random Chocolates 🍫</option>
+        <option value="Chicken Lollipop 🍗">Chicken Lollipop 🍗</option>
+        <option value="Video Call 📞">Video Call 📞</option>
+        <option value="Other">Other (Type Below)</option>
+      </select>
+
+      <div id="customInputDiv" style="display:none; margin-top:15px;">
+        <label for="custom_need">Tell me what you want 😘</label><br>
+        <input type="text" id="custom_need" name="custom_need" placeholder="Type here..." style="padding: 8px; width: 70%; border-radius: 10px;">
+      </div>
+
+      <br><br>
+      <button type="submit">Send 💌</button>
+    </form>
+  </div>
+  <audio id="bg-music" muted autoplay loop>
+    <source src="{{ url_for('static', filename='music.mp3') }}" type="audio/mp3">
+  </audio>  
+  
+  <button onclick="toggleMusic()" id="music-btn">🔈</button>
+  
+  <script>
+    let isMuted = true;
+    const music = document.getElementById("bg-music");
+    const btn = document.getElementById("music-btn");
+  
+    function toggleMusic() {
+      isMuted = !isMuted;
+      music.muted = isMuted;
+      btn.textContent = isMuted ? "🔇" : "🔈";
+    }
+  
+    // Optional: autoplay on first user interaction
+    document.body.addEventListener("click", () => {
+      music.play();
+    }, { once: true });
+  </script>
+  <div class="quote">
+    {{ quote }}
+  </div>
+  <style>
+    .quote {
+      font-size: 22px;
+      color: #800040;
+      font-style: italic;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+  
+  
+  
+</body>
+</html>
